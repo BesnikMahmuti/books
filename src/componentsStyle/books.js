@@ -10,6 +10,11 @@ export const booksStyle = makeStyles((theme) => ({
   cardActionArea: {
     height: "93%",
   },
+  font: {
+    fontFamily: "Merriweather",
+    fontWeight: "500",
+    fontSize:"20px"
+  },
   image: {
     objectFit: "cover",
     objectPosition: "top",

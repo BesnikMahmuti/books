@@ -1,6 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap');
+
+body {
+  margin:0;
+  padding: 0;
+  font-family: "Merriweather",serif;
+  font-weight: 500;
+}
+h1,h2,h3,h4,h5,h6,span,a {
+  text-decoration: none;
+  font-family: "Merriweather",serif;
+  font-weight: 500;
+}
+
 img {
   max-width: 100%;
 }
 .AppBarContainer {
   background-color: "#000";
+}
+
+.whiteColor {
+  color:#fff
+}
+.whiteColor:hover {
+  color:rgb(37, 110, 173)
 }

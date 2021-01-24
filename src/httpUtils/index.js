@@ -33,7 +33,7 @@ export const DELETE = async (url, config) => {
     };
   }
 
-  const { data = [] } = await axios.get(url, config);
+  const { data = [] } = await axios.delete(url, config);
 
   return data;
 };
@@ -71,7 +71,7 @@ export const PUT = async (url, config, body = {}) => {
     };
   }
 
-  const { data = [] } = axios.post(url, body, config);
+  const { data = [] } = axios.put(url, body, config);
 
   return data;
 };

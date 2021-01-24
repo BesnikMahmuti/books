@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -13,9 +12,14 @@ import { MoreVert } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { saveBookContext } from "../actions";
 import { Link } from "react-router-dom";
+import { GET_ALL_BOOKS } from "../constants";
+import { deleteBookFromDB } from "../bookUtils";
+import { deleteBook } from "../actions";
 
 export const Books = () => {
   const dispatch = useDispatch();
+  const { bookId = "", bookDeleted = false} = useSelector(state => state.bookActions);
+  console.log({bookId, bookDeleted});
   const classes = booksStyle();
   const [books, setBooks] = useState(() => []);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -33,13 +37,22 @@ export const Books = () => {
     setAnchorEl(e.currentTarget);
   };
 
+  const deleteBookFromUI = async (id) => {
+    const deletedBook = await deleteBookFromDB(id);
+    console.log(deletedBook);
+    setBooks([])
+    setAnchorEl(false)
+    openMenu(false)
+    dispatch(deleteBook(id, true));
+  };
+
   useEffect(() => {
     const booksResponse = async () => {
-      const data = await GET(`http://localhost:3007/api/v1/books`);
+      const data = await GET(`${GET_ALL_BOOKS}`);
       setBooks(data.books);
     };
     booksResponse();
-  }, []);
+  }, [bookDeleted]);
   return (
     <div className={classes.root}>
       {books &&
@@ -65,11 +78,14 @@ export const Books = () => {
                   <MenuItem onClick={(e, element) => console.log(e, element)}>
                     Edit
                   </MenuItem>
-                  <MenuItem onClick={(e, element) => console.log(e, element)}>
+                  <MenuItem onClick={(e, element) => deleteBookFromUI(_id)}>
                     Delete
                   </MenuItem>
                 </Menu>
-                <Link to={`/book/${_id}`}>
+                <Link
+                  to={`/book/${_id}`}
+                  className="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded"
+                >
                   <CardActionArea>
                     <CardMedia
                       component="img"
@@ -80,7 +96,12 @@ export const Books = () => {
                       // title
                     />
                     <CardContent>
-                      <Typography gutterBottom variant="h5" component="h2">
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="h2"
+                        className={classes.font}
+                      >
                         {title}
                       </Typography>
                       <Typography
@@ -93,9 +114,6 @@ export const Books = () => {
                     </CardContent>
                   </CardActionArea>
                 </Link>
-                {/* <CardActions size="small" color="primary">
-                  Read More
-                </CardActions> */}
               </Fragment>
             </Card>
           );

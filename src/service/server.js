@@ -4,11 +4,16 @@ const cors = require("cors");
 const Book = require("./models/book");
 const mongoose = require("mongoose");
 const book = require("./models/book");
-const requestParamsValidator = require("./utils/validation").RequestParamsValidator;
+const requestParamsValidator = require("./utils/validation")
+  .RequestParamsValidator;
 const errorHandler = require("./utils/validation").ErrorHandler;
 const requestBodyValidator = require("./utils/validation").RequestBodyValidator;
 const succesHandler = require("./utils/validation").SuccesHandler;
-const bookPropertiesValidator = require("./utils/validation").BookPropertiesValidator;
+const bookPropertiesValidator = require("./utils/validation")
+  .BookPropertiesValidator;
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
+const swaggerOptions = require("./swaggerConfig").swaggerOptions;
 require("dotenv").config();
 
 const port = process.env.port || process.env.PORT || 3007;
@@ -26,6 +31,10 @@ mongoose.connect(
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
+const swaggerDocs = swaggerJSDoc(swaggerOptions);
+
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+
 app.get("/api/v1/books", async (req, res) => {
   const books = await Book.find().skip(0).limit(10);
   res.status(200).json({
@@ -37,9 +46,8 @@ app.get("/api/v1/book/:id", async (req, res) => {
   const { id } = req.params || {};
   console.log(req.params);
 
-  if(requestParamsValidator(req.params)) {
-    console.log(true);
-    res.status(400).json(requestParamsValidator(req.params))
+  if (requestParamsValidator(req.params)) {
+    res.status(400).json(requestParamsValidator(req.params));
   }
 
   try {
@@ -49,48 +57,48 @@ app.get("/api/v1/book/:id", async (req, res) => {
     }
     res.status(200).json(book);
   } catch (error) {
-    res.status(400).json(errorHandler("This book doesn't exist in the database"))
+    res
+      .status(400)
+      .json(errorHandler("This book doesn't exist in the database"));
   }
-
 });
 
 app.put("/api/v1/book/:id", async (req, res) => {
   const { id } = req.params || {};
   const bodyParameters = req.body || {};
   const updateQuery = {};
-  
 
-  if(requestParamsValidator(req.params)) {
-    res.status(400).json(requestParamsValidator(req.params))
+  if (requestParamsValidator(req.params)) {
+    return res.status(400).json(requestParamsValidator(req.params));
   }
 
-  if(requestBodyValidator(req.body)) {
-    res.status(400).json(requestBodyValidator(req.body))
+  if (requestBodyValidator(req.body)) {
+    return res.status(400).json(requestBodyValidator(req.body));
   }
 
-  if(bookPropertiesValidator(req.body)) {
-    res.status(400).json(bookPropertiesValidator(req.body))
+  if (bookPropertiesValidator(req.body)) {
+    return res.status(400).json(bookPropertiesValidator(req.body));
   }
 
-
-  if(bodyParameters) {
-    Object.entries(bodyParameters).forEach(([key,value]) => {
+  if (bodyParameters) {
+    Object.entries(bodyParameters).forEach(([key, value]) => {
       updateQuery[`${key}`] = value;
-    })
+    });
   }
-
 
   try {
     const updateResponse = await book.updateOne(
       { _id: id },
       { $set: updateQuery }
     );
-  
-    if(updateResponse) {
-      res.status(200).json(succesHandler("update", "Book updated successfully"))
+
+    if (updateResponse) {
+      res
+        .status(200)
+        .json(succesHandler("update", "Book updated successfully"));
     }
   } catch (error) {
-    res.status(400).json(errorHandler("Failed to update the book"))
+    res.status(400).json(errorHandler("Failed to update the book"));
   }
 });
 
@@ -118,9 +126,9 @@ app.post("/api/v1/book", async (req, res) => {
   });
   try {
     const result = await book.save();
-    res.send(`Book: ${result}`);
+    res.status(201).json(result);
   } catch (error) {
-    console.log(error);
+    res.status(400).json(errorHandler("Failed to create the book"));
   }
 });
 
@@ -128,9 +136,9 @@ app.delete("/api/v1/book/:id", async (req, res) => {
   try {
     const { id } = req.params || {};
     const bookDeleteResponse = await book.remove({ _id: id });
-    res.json(bookDeleteResponse);
+    res.status(200).json(bookDeleteResponse);
   } catch (error) {
-    console.log(error);
+    res.status(400).json(errorHandler("Book was not deleted successfully"));
   }
 });
 

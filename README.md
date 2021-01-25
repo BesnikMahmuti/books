@@ -14,7 +14,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 ### `npm run serverStart`
 
 Runs the express server.\
-Open [http://localhost:3007](http://localhost:3007) to view it in the browser.
+Example: http://localhost:3007/api/v1/books
 
 ### `Swagger documentation url`
 

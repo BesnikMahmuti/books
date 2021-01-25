@@ -16,6 +16,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 Runs the express server.\
 Open [http://localhost:3007](http://localhost:3007) to view it in the browser.
 
+### `Swagger documentation url`
+
+Open [http://localhost:3007/api-docs](http://localhost:3007/api-docs) to view it in the browser.
+
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 

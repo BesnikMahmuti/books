@@ -162,7 +162,7 @@ export const Books = () => {
               dispatch(updateBookList(!booksListUpdated));
             }}
           >
-            Read More
+            Show More
           </Button>
         )}
       </ButtonWrapperCenter>

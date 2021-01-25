@@ -112,10 +112,18 @@ exports.BookPropertiesValidator = props => {
     return false;
 }
 
-exports.ErrorHandler = (errorMessage) => {
+exports.FieldTypeValidator = (item = "", expectedType = "string") => {
+    // skip && isNaN(Number(skip))
+    if(typeof item !== expectedType) {
+
+    }
+}
+
+exports.ErrorHandler = (errorMessage = "", field ="") => {
     return {
         "error": {
-            "msg": errorMessage
+            "msg": errorMessage,
+            "field": field
         }
     }
 }

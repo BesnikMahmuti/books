@@ -33,7 +33,7 @@ export const Author = styled.h3`
 `;
 
 export const BookMetadatas = styled.div`
- font-size:12px;
+  font-size:12px;
   margin-top: 4px;
   font-family: "Merriweather", serif;
   font-weight: 300;
@@ -60,3 +60,12 @@ export const BookDescription = styled.h4`
   font-weight: 400;
   width:70%;
 `;
+
+export const BookDetails = styled.h1`
+font-family: "Merriweather", serif;
+  margin-top: 10;
+  padding-left:40px;
+  word-break: break-word;
+  margin-top: 10px;
+  font-weight: 400;
+`

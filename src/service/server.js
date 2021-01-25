@@ -11,6 +11,8 @@ const requestBodyValidator = require("./utils/validation").RequestBodyValidator;
 const succesHandler = require("./utils/validation").SuccesHandler;
 const bookPropertiesValidator = require("./utils/validation")
   .BookPropertiesValidator;
+  const fieldTypeValidator = require("./utils/validation")
+  .FieldTypeValidator;
 const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
 const swaggerOptions = require("./swaggerConfig").swaggerOptions;
@@ -36,15 +38,25 @@ const swaggerDocs = swaggerJSDoc(swaggerOptions);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 app.get("/api/v1/books", async (req, res) => {
-  const books = await Book.find().skip(0).limit(10);
-  res.status(200).json({
-    books,
-  });
+  try {
+    const { skip = 0, limit = 10 } = req.query || {};
+    if((Number(skip) === 0 || Number(skip) > 0) && (Number(skip) === 0 || Number(skip) > 0)) {
+      const books = await Book.find().skip(Number(skip)).limit(Number(limit));
+      return res.status(200).json({
+        books,
+      });
+    }
+    const books = await Book.find();
+    return res.status(200).json({
+      books,
+    });
+  } catch (error) {
+    res.status(400).json(errorHandler("Failed to get the books"));
+  }
 });
 
 app.get("/api/v1/book/:id", async (req, res) => {
   const { id } = req.params || {};
-  console.log(req.params);
 
   if (requestParamsValidator(req.params)) {
     res.status(400).json(requestParamsValidator(req.params));
@@ -135,8 +147,9 @@ app.post("/api/v1/book", async (req, res) => {
 app.delete("/api/v1/book/:id", async (req, res) => {
   try {
     const { id } = req.params || {};
-    const bookDeleteResponse = await book.remove({ _id: id });
-    res.status(200).json(bookDeleteResponse);
+    const book = await Book.findById(id);
+    await book.remove({ _id: id });
+    res.status(200).json(book);
   } catch (error) {
     res.status(400).json(errorHandler("Book was not deleted successfully"));
   }

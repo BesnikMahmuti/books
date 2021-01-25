@@ -14,3 +14,20 @@ export const deleteBook = (id,status) => {
         }
     }
 }
+
+export const updateBookList = (books = []) => {
+    return {
+        type:"UPDATE_BOOK_LIST",
+        payload: books
+    }
+}
+
+export const snackBarContent = (message = "", opened = false) => {
+    return {
+        type:"UPDATE_SNACKBAR_MESSAGE",
+        payload: {
+            message,
+            opened
+        }
+    }
+}

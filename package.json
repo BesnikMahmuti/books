@@ -21,7 +21,10 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "redux": "^4.0.5",
+    "save": "^2.4.0",
     "styled-components": "^5.2.1",
+    "swagger-jsdoc": "^6.0.1",
+    "swagger-ui-express": "^4.1.6",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
